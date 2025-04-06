@@ -57,6 +57,7 @@ func LoadConfig() (*config, error) {
 	return cfg, err
 }
 
+// Write config's profiles to file.
 func (cfg *config) SaveConfig() error {
 	// To work with a config, we'll need the file and directory where it lives.
 	if err := cfg.writeConfig(); err != nil {
