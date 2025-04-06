@@ -24,7 +24,7 @@ type Battery struct {
 	Name             string
 	Start            int64
 	End              int64
-	FullChargeSpec   int64
+	FullChargeDesign int64
 	FullChargeActual int64
 }
 
@@ -71,15 +71,34 @@ func (bat *Battery) writeThresholds() error {
 	return nil
 }
 
+func (bat *Battery) readFullCharges() error {
+	fullActualPath := path.Join(batFilepath, bat.Name, fullActualFile)
+	fullDesignPath := path.Join(batFilepath, bat.Name, fullDesignFile)
+
+	fullActualValue, err := readInt(fullActualPath)
+	if err != nil {
+		return fmt.Errorf("failed to get actual full-charge value: %v", err)
+	}
+
+	fullDesignValue, err := readInt(fullDesignPath)
+	if err != nil {
+		return fmt.Errorf("failed to get design full-charge value: %v", err)
+	}
+
+	bat.FullChargeActual = fullActualValue
+	bat.FullChargeDesign = fullDesignValue
+	return nil
+}
+
 func readInt(filepath string) (int64, error) {
 	filename := path.Base(filepath)
 	b, err := os.ReadFile(filepath)
 	if err != nil {
-		return -1, fmt.Errorf("failed %s ReadFile: %v", filename, err)
+		return 0, fmt.Errorf("failed %s ReadFile: %v", filename, err)
 	}
 	value, bytesRead := binary.Varint(b)
 	if bytesRead == 0 {
-		return -1, fmt.Errorf("failed %s Varint: %v", filename, err)
+		return 0, fmt.Errorf("failed %s Varint: %v", filename, err)
 	}
 
 	return value, nil

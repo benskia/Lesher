@@ -25,8 +25,8 @@ import (
 //	- Read battery health information.
 //	- Calculate battery health.
 
-// Reads power_supply info into Batteries that ops can work with.
-func GetThresholds() ([]battery, error) {
+// Reads power_supply info into Batteries for profile management ops.
+func GetThresholds() ([]Battery, error) {
 	batteries, err := getPowerSupplies(batFilepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find power supplies: %v", err)
@@ -35,7 +35,7 @@ func GetThresholds() ([]battery, error) {
 	for _, bat := range batteries {
 		err := bat.readThresholds()
 		if err != nil {
-			return nil, fmt.Errorf("failed to read %s thresholds: %v", bat.name, err)
+			return nil, fmt.Errorf("failed to read %s thresholds: %v", bat.Name, err)
 		}
 	}
 
@@ -43,27 +43,44 @@ func GetThresholds() ([]battery, error) {
 }
 
 // Writes power supply info for all power_supplies passed by ops.
-func SaveThresholds(batteries []battery) error {
+func SaveThresholds(batteries []Battery) error {
 	for _, bat := range batteries {
 		if err := bat.writeThresholds(); err != nil {
-			return fmt.Errorf("failed to write %s thresholds: %v", bat.name, err)
+			return fmt.Errorf("failed to write %s thresholds: %v", bat.Name, err)
 		}
 	}
 	return nil
 }
 
+// Reads actual and design full-charge info into Batteries for Health op.
+func GetFullCharges() ([]Battery, error) {
+	batteries, err := getPowerSupplies(batFilepath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find power supplies: %v", err)
+	}
+
+	for _, bat := range batteries {
+		err := bat.readFullCharges()
+		if err != nil {
+			return nil, fmt.Errorf("failed to read %s full-charges: %v", bat.Name, err)
+		}
+	}
+
+	return batteries, nil
+}
+
 // Returns a slice of active batteries with names to populate with info.
-func getPowerSupplies(filepath string) ([]battery, error) {
+func getPowerSupplies(filepath string) ([]Battery, error) {
 	dirs, err := os.ReadDir(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed ReadDir: %v", err)
 	}
 
 	// ./power_supply/* should only contain BAT# and possibly AC. We only need BATs.
-	batteries := []battery{}
+	batteries := []Battery{}
 	for _, dir := range dirs {
 		if strings.Contains(dir.Name(), "BAT") {
-			batteries = append(batteries, battery{name: dir.Name()})
+			batteries = append(batteries, Battery{Name: dir.Name()})
 		}
 	}
 
