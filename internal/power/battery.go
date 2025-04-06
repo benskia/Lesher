@@ -2,6 +2,7 @@ package power
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -17,12 +18,14 @@ const (
 	statusFile            = "status"
 )
 
+// We're working with int64 instead of int for the sake of using binary.Varint()
+// and binary.PutVarint() to easily read and write ints to files.
 type battery struct {
 	name             string
-	start            int
-	end              int
-	fullChargeSpec   int
-	fullChargeActual int
+	start            int64
+	end              int64
+	fullChargeSpec   int64
+	fullChargeActual int64
 }
 
 func (bat *battery) readThresholds() error {
@@ -44,7 +47,31 @@ func (bat *battery) readThresholds() error {
 	return nil
 }
 
-func readInt(filepath string) (int, error) {
+func (bat *battery) writeThresholds() error {
+	startPath := path.Join(batFilepath, bat.name, startFile)
+	endPath := path.Join(batFilepath, bat.name, endFile)
+	b := []byte{}
+
+	if bytesWritten := binary.PutVarint(b, bat.start); bytesWritten == 0 {
+		return errors.New("failed start PutVarint")
+	}
+
+	if err := os.WriteFile(startPath, b, 0644); err != nil {
+		return fmt.Errorf("failed start WriteFile: %v", err)
+	}
+
+	if bytesWritten := binary.PutVarint(b, bat.end); bytesWritten == 0 {
+		return errors.New("failed end PutVarint")
+	}
+
+	if err := os.WriteFile(endPath, b, 0644); err != nil {
+		return fmt.Errorf("failed end WriteFile: %v", err)
+	}
+
+	return nil
+}
+
+func readInt(filepath string) (int64, error) {
 	filename := path.Base(filepath)
 	b, err := os.ReadFile(filepath)
 	if err != nil {
@@ -55,5 +82,5 @@ func readInt(filepath string) (int, error) {
 		return -1, fmt.Errorf("failed %s Varint: %v", filename, err)
 	}
 
-	return int(value), nil
+	return value, nil
 }

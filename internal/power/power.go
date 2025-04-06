@@ -1,6 +1,7 @@
 package power
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"os"
@@ -43,7 +44,12 @@ func GetThresholds() ([]battery, error) {
 }
 
 // Writes power supply info for all power_supplies passed by ops.
-func SaveThresholds([]battery) error {
+func SaveThresholds(batteries []battery) error {
+	for _, bat := range batteries {
+		if err := bat.writeThresholds(); err != nil {
+			return fmt.Errorf("failed to write %s thresholds: %v", bat.name, err)
+		}
+	}
 	return nil
 }
 
