@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path"
@@ -22,12 +23,6 @@ type Profile struct {
 func NewConfig() (*config, error) {
 	configDir := path.Join(os.Getenv("XDG_CONFIG_HOME"), "lesher")
 
-	// To work with a config, we'll need the file and the directory where it lives.
-	err := os.MkdirAll(configDir, 0666)
-	if err != nil {
-		return nil, fmt.Errorf("NewConfig: %v", err)
-	}
-
 	// When creating a new config, let's include some sane defaults. A
 	// battery-life saving "mid" profile and a "high" profile that avoids
 	// high temps at 100% charge.
@@ -47,5 +42,29 @@ func NewConfig() (*config, error) {
 		},
 	}
 
+	// To work with a config, we'll need the file and directory where it lives.
+	if err := cfg.writeConfig(); err != nil {
+		return nil, fmt.Errorf("createConfigFile: %v", err)
+	}
+
 	return cfg, nil
+}
+
+func (cfg *config) writeConfig() error {
+	if err := os.MkdirAll(path.Dir(cfg.configPath), 0755); err != nil {
+		return fmt.Errorf("writeConfig: %v", err)
+	}
+
+	f, err := os.Create(cfg.configPath)
+	defer f.Close()
+	if err != nil {
+		return fmt.Errorf("writeConfig: %v", err)
+	}
+
+	b, err := json.Marshal(cfg)
+	if err != nil {
+		return fmt.Errorf("createConf")
+	}
+
+	return nil
 }
