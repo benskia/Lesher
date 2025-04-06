@@ -1,7 +1,6 @@
 package power
 
 import (
-	"encoding/binary"
 	"errors"
 	"fmt"
 	"os"
