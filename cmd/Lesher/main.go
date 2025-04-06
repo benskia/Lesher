@@ -45,9 +45,9 @@ func main() {
 		fmt.Println(battery)
 	}
 
-	cfg, err := config.NewConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Fatalf("failed to create config\n%v", err)
+		log.Fatal(err)
 	}
 
 	fmt.Println(cfg.Profiles)
