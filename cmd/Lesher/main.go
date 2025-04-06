@@ -33,6 +33,8 @@ import (
 // set <name>
 //		Sets profile <name> as the active profile.
 
+// TODO: powerSupply package, cmds
+
 func main() {
 	powerSupplyDir := "/sys/class/power_supply/"
 	batteries, err := getDirs(powerSupplyDir)
