@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 	"strings"
+
+	"github.com/benskia/Lesher/internal/config"
 )
 
 // Users can run Lesher to list battery threshold stats, check fullCharge
@@ -35,11 +37,18 @@ func main() {
 	powerSupplyDir := "/sys/class/power_supply/"
 	batteries, err := getDirs(powerSupplyDir)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to get power supplies\n%v", err)
 	}
 	for _, battery := range batteries {
 		fmt.Println(battery)
 	}
+
+	cfg, err := config.NewConfig()
+	if err != nil {
+		log.Fatalf("failed to create config\n%v", err)
+	}
+
+	fmt.Println(cfg.Profiles)
 }
 
 func getDirs(filepath string) ([]string, error) {
