@@ -18,22 +18,24 @@ import (
 
 type Profile struct {
 	Name  string `json:"name"`
-	Start int    `json:"start"`
-	End   int    `json:"end"`
+	Start int64  `json:"start"`
+	End   int64  `json:"end"`
 }
+
+type Profiles map[string]Profile
 
 type Config struct {
 	configPath string
-	Profiles   []Profile `json:"profiles"`
+	Profiles   map[string]Profile `json:"profiles"`
 }
 
-var Defaults []Profile = []Profile{
-	{
+var Defaults Profiles = Profiles{
+	"mid": {
 		Name:  "mid",
 		Start: 40,
 		End:   50,
 	},
-	{
+	"high": {
 		Name:  "high",
 		Start: 70,
 		End:   80,
@@ -57,9 +59,7 @@ func LoadConfig() (*Config, error) {
 	return cfg, err
 }
 
-// Write config's profiles to file.
 func (cfg *Config) SaveConfig() error {
-	// To work with a config, we'll need the file and directory where it lives.
 	if err := cfg.writeConfig(); err != nil {
 		return fmt.Errorf("failed to write config file: %v", err)
 	}
@@ -72,7 +72,7 @@ func (cfg *Config) readConfig() error {
 		return fmt.Errorf("error reading config file: %v", err)
 	}
 
-	var profiles []Profile
+	var profiles Profiles
 	if err = json.Unmarshal(b, &profiles); err != nil {
 		return fmt.Errorf("error unmarshaling: %v", err)
 	}
@@ -82,6 +82,7 @@ func (cfg *Config) readConfig() error {
 }
 
 func (cfg *Config) writeConfig() error {
+	// To work with a config, we'll need the file and directory where it lives.
 	if err := os.MkdirAll(path.Dir(cfg.configPath), 0755); err != nil {
 		return fmt.Errorf("error making config directories: %v", err)
 	}

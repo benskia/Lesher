@@ -7,6 +7,11 @@ import (
 	"github.com/benskia/Lesher/internal/power"
 )
 
+const listDescription string = `
+Usage: Lesher list
+Lists existing profiles and active battery thresholds.
+`
+
 func commandList(cfg *config.Config, _ []string) error {
 	fmt.Println("Profiles:")
 	for _, profile := range cfg.Profiles {

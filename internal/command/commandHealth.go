@@ -7,6 +7,12 @@ import (
 	"github.com/benskia/Lesher/internal/power"
 )
 
+const healthDescription string = `
+Usage: Lesher health
+Lists full-charge stats for active batteries, and displays the remaining
+percentage of full-charge that is possible due to wear.
+`
+
 func commandHealth(_ *config.Config, _ []string) error {
 	batteries, err := power.GetFullCharges()
 	if err != nil {

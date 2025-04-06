@@ -23,32 +23,32 @@ func GetCommands() map[string]Command {
 	return map[string]Command{
 		"help": {
 			Name:        "help",
-			Description: "Display program documentation",
+			Description: helpDescription,
 			Callback:    commandHelp,
 		},
 		"list": {
 			Name:        "list",
-			Description: "Display current threshold values and profiles.",
+			Description: listDescription,
 			Callback:    commandList,
 		},
 		"health": {
 			Name:        "health",
-			Description: "Display percentage of full-charge spec remaining.",
+			Description: healthDescription,
 			Callback:    commandHealth,
 		},
 		"create": {
 			Name:        "create",
-			Description: "Create or overwrite a charge threshold profile.",
+			Description: createDescription,
 			Callback:    commandCreate,
 		},
 		"delete": {
 			Name:        "delete",
-			Description: "Delete an existing charge threshold profile.",
+			Description: deleteDescription,
 			Callback:    commandDelete,
 		},
 		"set": {
 			Name:        "set",
-			Description: "Activate an existing charge threshold profile.",
+			Description: setDescription,
 			Callback:    commandSet,
 		},
 	}
