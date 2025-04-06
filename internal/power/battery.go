@@ -20,17 +20,17 @@ const (
 
 // We're working with int64 instead of int for the sake of using binary.Varint()
 // and binary.PutVarint() to easily read and write ints to files.
-type battery struct {
-	name             string
-	start            int64
-	end              int64
-	fullChargeSpec   int64
-	fullChargeActual int64
+type Battery struct {
+	Name             string
+	Start            int64
+	End              int64
+	FullChargeSpec   int64
+	FullChargeActual int64
 }
 
-func (bat *battery) readThresholds() error {
-	startPath := path.Join(batFilepath, bat.name, startFile)
-	endPath := path.Join(batFilepath, bat.name, endFile)
+func (bat *Battery) readThresholds() error {
+	startPath := path.Join(batFilepath, bat.Name, startFile)
+	endPath := path.Join(batFilepath, bat.Name, endFile)
 
 	startValue, err := readInt(startPath)
 	if err != nil {
@@ -42,17 +42,17 @@ func (bat *battery) readThresholds() error {
 		return fmt.Errorf("failed to get end value: %v", err)
 	}
 
-	bat.start = startValue
-	bat.end = endValue
+	bat.Start = startValue
+	bat.End = endValue
 	return nil
 }
 
-func (bat *battery) writeThresholds() error {
-	startPath := path.Join(batFilepath, bat.name, startFile)
-	endPath := path.Join(batFilepath, bat.name, endFile)
+func (bat *Battery) writeThresholds() error {
+	startPath := path.Join(batFilepath, bat.Name, startFile)
+	endPath := path.Join(batFilepath, bat.Name, endFile)
 	b := []byte{}
 
-	if bytesWritten := binary.PutVarint(b, bat.start); bytesWritten == 0 {
+	if bytesWritten := binary.PutVarint(b, bat.Start); bytesWritten == 0 {
 		return errors.New("failed start PutVarint")
 	}
 
@@ -60,7 +60,7 @@ func (bat *battery) writeThresholds() error {
 		return fmt.Errorf("failed start WriteFile: %v", err)
 	}
 
-	if bytesWritten := binary.PutVarint(b, bat.end); bytesWritten == 0 {
+	if bytesWritten := binary.PutVarint(b, bat.End); bytesWritten == 0 {
 		return errors.New("failed end PutVarint")
 	}
 

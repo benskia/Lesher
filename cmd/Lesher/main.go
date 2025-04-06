@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
+	"github.com/benskia/Lesher/internal/command"
 	"github.com/benskia/Lesher/internal/config"
 )
 
@@ -11,7 +13,7 @@ import (
 // health, create threshold profiles, and activate existing profiles. This is
 // done using charge_control files of the Linux power_supply class.
 //
-// Usage: Lesher <cmd> [arg...]
+// Usage: Lesher <cmd> [opts...]
 //
 // help
 //		Display this documentation.
@@ -44,9 +46,19 @@ func main() {
 	}
 
 	// Execute ops
-	if len(os.Args) == 0 {
+	if len(os.Args) < 1 {
 		fmt.Println("Missing args. Try: Lesher help")
 	}
 
-	fmt.Println(cfg.Profiles)
+	cmdName := os.Args[1]
+	cmdArgs := os.Args[1:]
+
+	cmd, ok := command.GetCommands()[cmdName]
+	if !ok {
+		log.Fatal("Invalid command name.")
+	}
+	err = cmd.Callback(cfg, cmdArgs)
+	if err != nil {
+		log.Fatalf("error executing %s: %v", cmd.Name, err)
+	}
 }

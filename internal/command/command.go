@@ -13,11 +13,43 @@ import "github.com/benskia/Lesher/internal/config"
 //	- 'delete': Delete profile
 //	- 'set': Set active profile
 
-// TODO: Command execution
-
 type Command struct {
-	Name string
-	Cmd  func(args []string, cfg *config.Config) error
+	Name        string
+	Description string
+	Callback    func(cfg *config.Config, args []string) error
 }
 
-func Execute(args []string)
+func GetCommands() map[string]Command {
+	return map[string]Command{
+		"help": {
+			Name:        "help",
+			Description: "Display program documentation",
+			Callback:    commandHelp,
+		},
+		"list": {
+			Name:        "list",
+			Description: "Display current threshold values and profiles.",
+			Callback:    commandList,
+		},
+		"health": {
+			Name:        "health",
+			Description: "Display percentage of full-charge spec remaining.",
+			Callback:    commandHealth,
+		},
+		"create": {
+			Name:        "create",
+			Description: "Create or overwrite a charge threshold profile.",
+			Callback:    commandCreate,
+		},
+		"delete": {
+			Name:        "delete",
+			Description: "Delete an existing charge threshold profile.",
+			Callback:    commandDelete,
+		},
+		"set": {
+			Name:        "set",
+			Description: "Activate an existing charge threshold profile.",
+			Callback:    commandSet,
+		},
+	}
+}
