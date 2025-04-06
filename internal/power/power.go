@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/benskia/Lesher/internal/config"
 )
 
 // Description:
@@ -26,34 +28,42 @@ import (
 //	- Calculate battery health.
 
 // Reads power_supply info into Batteries for profile management ops.
-func GetThresholds() ([]Battery, error) {
+func GetThresholds() (Batteries, error) {
 	batteries, err := getPowerSupplies(batFilepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find power supplies: %v", err)
 	}
 
-	for _, bat := range batteries {
+	for name, bat := range batteries {
 		err := bat.readThresholds()
 		if err != nil {
-			return nil, fmt.Errorf("failed to read %s thresholds: %v", bat.Name, err)
+			return nil, fmt.Errorf("failed to read %s thresholds: %v", name, err)
 		}
+		batteries[name] = bat
 	}
 
 	return batteries, nil
 }
 
 // Writes power supply info for all power_supplies passed by ops.
-func SaveThresholds(batteries []Battery) error {
-	for _, bat := range batteries {
-		if err := bat.writeThresholds(); err != nil {
-			return fmt.Errorf("failed to write %s thresholds: %v", bat.Name, err)
-		}
+func SaveThresholds(profile config.Profile) error {
+	batteries, err := getPowerSupplies(batFilepath)
+	if err != nil {
+		return fmt.Errorf("failed to find power supplies: %v", err)
 	}
+
+	for name, bat := range batteries {
+		if err := bat.writeThresholds(); err != nil {
+			return fmt.Errorf("failed to write %s thresholds: %v", name, err)
+		}
+		batteries[name] = bat
+	}
+
 	return nil
 }
 
 // Reads actual and design full-charge info into Batteries for Health op.
-func GetFullCharges() ([]Battery, error) {
+func GetFullCharges() (Batteries, error) {
 	batteries, err := getPowerSupplies(batFilepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to find power supplies: %v", err)
@@ -70,17 +80,17 @@ func GetFullCharges() ([]Battery, error) {
 }
 
 // Returns a slice of active batteries with names to populate with info.
-func getPowerSupplies(filepath string) ([]Battery, error) {
+func getPowerSupplies(filepath string) (Batteries, error) {
 	dirs, err := os.ReadDir(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("failed ReadDir: %v", err)
 	}
 
 	// ./power_supply/* should only contain BAT# and possibly AC. We only need BATs.
-	batteries := []Battery{}
+	batteries := Batteries{}
 	for _, dir := range dirs {
 		if strings.Contains(dir.Name(), "BAT") {
-			batteries = append(batteries, Battery{Name: dir.Name()})
+			batteries[dir.Name()] = Battery{Name: dir.Name()}
 		}
 	}
 

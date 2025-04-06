@@ -28,6 +28,9 @@ type Battery struct {
 	FullChargeActual int64
 }
 
+// A map simplifies execution of ops that target batteries by name.
+type Batteries map[string]Battery
+
 func (bat *Battery) readThresholds() error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
