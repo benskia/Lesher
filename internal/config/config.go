@@ -17,14 +17,14 @@ import (
 //	- Store Profiles during program execution.
 
 type Profile struct {
-	Name  string
-	Start int
-	End   int
+	Name  string `json:"name"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
 }
 
-type config struct {
+type Config struct {
 	configPath string
-	Profiles   []Profile
+	Profiles   []Profile `json:"profiles"`
 }
 
 var Defaults []Profile = []Profile{
@@ -41,10 +41,10 @@ var Defaults []Profile = []Profile{
 }
 
 // Get a config pointer whether a previous config exists or not.
-func LoadConfig() (*config, error) {
+func LoadConfig() (*Config, error) {
 	xdgCfg := os.Getenv("XDG_CONFIG_HOME")
 	configPath := path.Join(xdgCfg, "lesher/config.json")
-	cfg := &config{configPath: configPath}
+	cfg := &Config{configPath: configPath}
 
 	// We can still use Defaults if we fail to get Profiles from a config file.
 	// Still, if we were expecting success, so return that error later.
@@ -58,7 +58,7 @@ func LoadConfig() (*config, error) {
 }
 
 // Write config's profiles to file.
-func (cfg *config) SaveConfig() error {
+func (cfg *Config) SaveConfig() error {
 	// To work with a config, we'll need the file and directory where it lives.
 	if err := cfg.writeConfig(); err != nil {
 		return fmt.Errorf("failed to write config file: %v", err)
@@ -66,7 +66,7 @@ func (cfg *config) SaveConfig() error {
 	return nil
 }
 
-func (cfg *config) readConfig() error {
+func (cfg *Config) readConfig() error {
 	b, err := os.ReadFile(cfg.configPath)
 	if err != nil {
 		return fmt.Errorf("error reading config file: %v", err)
@@ -74,14 +74,14 @@ func (cfg *config) readConfig() error {
 
 	var profiles []Profile
 	if err = json.Unmarshal(b, &profiles); err != nil {
-		return fmt.Errorf("error unmarshaling JSON: %v", err)
+		return fmt.Errorf("error unmarshaling: %v", err)
 	}
 
 	cfg.Profiles = profiles
 	return nil
 }
 
-func (cfg *config) writeConfig() error {
+func (cfg *Config) writeConfig() error {
 	if err := os.MkdirAll(path.Dir(cfg.configPath), 0755); err != nil {
 		return fmt.Errorf("error making config directories: %v", err)
 	}
@@ -94,7 +94,7 @@ func (cfg *config) writeConfig() error {
 
 	b, err := json.Marshal(cfg.Profiles)
 	if err != nil {
-		return fmt.Errorf("error marshaling json: %v", err)
+		return fmt.Errorf("error marshaling: %v", err)
 	}
 
 	if _, err := f.Write(b); err != nil {

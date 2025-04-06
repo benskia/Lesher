@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/benskia/Lesher/internal/config"
 )
@@ -27,15 +27,25 @@ import (
 //		Creates or overwrites profile <name> that starts charging at <start>
 //		percent and stops at <end>.
 //
+// delete <name>
+//		Deletes profile <name> if it exists.
+//
 // set <name>
 //		Sets profile <name> as the active profile.
 
-// TODO: powerSupply package, cmds
-
 func main() {
+	// Load/Create config
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("%v\nCreating new config...\n", err)
+		if err := cfg.SaveConfig(); err != nil {
+			fmt.Println(err)
+		}
+	}
+
+	// Execute ops
+	if len(os.Args) == 0 {
+		fmt.Println("Missing args. Try: Lesher help")
 	}
 
 	fmt.Println(cfg.Profiles)
