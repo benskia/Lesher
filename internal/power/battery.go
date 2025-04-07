@@ -3,6 +3,7 @@ package power
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path"
 	"strconv"
 	"strings"
@@ -48,16 +49,25 @@ func (bat *Battery) readThresholds() error {
 	return nil
 }
 
+// Elevated permissions are required to write to power_supply files. It's a bit
+// overkill to require these permissions for the entire program, so we can just
+// execute sudo shell command to write.
 func (bat *Battery) writeThresholds() error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
+	var echo string
+	var cmd *exec.Cmd
 
-	if err := os.WriteFile(startPath, []byte(string(bat.Start)), 0644); err != nil {
-		return fmt.Errorf("failed start WriteFile: %v", err)
+	echo = fmt.Sprintf("echo > %s", startPath)
+	cmd = exec.Command("sudo", echo)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed start write: %v", err)
 	}
 
-	if err := os.WriteFile(endPath, []byte(string(bat.End)), 0644); err != nil {
-		return fmt.Errorf("failed end WriteFile: %v", err)
+	echo = fmt.Sprintf("echo > %s", endPath)
+	cmd = exec.Command("sudo", echo)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed end write: %v", err)
 	}
 
 	return nil
