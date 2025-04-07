@@ -69,11 +69,12 @@ func GetFullCharges() (Batteries, error) {
 		return nil, fmt.Errorf("failed to find power supplies: %v", err)
 	}
 
-	for _, bat := range batteries {
+	for name, bat := range batteries {
 		err := bat.readFullCharges()
 		if err != nil {
-			return nil, fmt.Errorf("failed to read %s full-charges: %v", bat.Name, err)
+			return nil, fmt.Errorf("failed to read %s full-charges: %v", name, err)
 		}
+		batteries[name] = bat
 	}
 
 	return batteries, nil

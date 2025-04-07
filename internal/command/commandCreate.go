@@ -8,9 +8,8 @@ import (
 	"github.com/benskia/Lesher/internal/config"
 )
 
-const createDescription string = `
-Usage: Lesher create <name> <start> <end>
-Creates or overwrites profile <name> with the given <start> and <end> values.
+const createDescription string = `Usage: Lesher create <name> <start> <end>
+	Creates or overwrites profile <name> with the given <start> and <end> values.
 `
 
 func commandCreate(cfg *config.Config, args []string) error {
@@ -20,17 +19,15 @@ func commandCreate(cfg *config.Config, args []string) error {
 
 	name := args[0]
 
-	arg1, err := strconv.Atoi(args[1])
+	start, err := strconv.Atoi(args[1])
 	if err != nil {
 		return fmt.Errorf("error converting start value: %v", err)
 	}
-	start := int64(arg1)
 
-	arg2, err := strconv.Atoi(args[2])
+	end, err := strconv.Atoi(args[2])
 	if err != nil {
 		return fmt.Errorf("error converting end value: %v", err)
 	}
-	end := int64(arg2)
 
 	// We can just update the existing values if the profile already exists.
 	if profile, ok := cfg.Profiles[name]; ok {
@@ -38,9 +35,11 @@ func commandCreate(cfg *config.Config, args []string) error {
 		profile.Start = start
 		profile.End = end
 		cfg.Profiles[name] = profile
+
 		if err := cfg.SaveConfig(); err != nil {
 			return fmt.Errorf("error saving profiles: %v", err)
 		}
+
 		return nil
 	}
 
@@ -49,6 +48,10 @@ func commandCreate(cfg *config.Config, args []string) error {
 		Name:  name,
 		Start: start,
 		End:   end,
+	}
+
+	if err := cfg.SaveConfig(); err != nil {
+		return fmt.Errorf("error saving profiles: %v", err)
 	}
 
 	return nil

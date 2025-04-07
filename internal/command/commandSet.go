@@ -8,9 +8,8 @@ import (
 	"github.com/benskia/Lesher/internal/power"
 )
 
-const setDescription string = `
-Usage: Lesher set <name>
-Activates profile <name> by writing its values to power_supply files.
+const setDescription string = `Usage: Lesher set <name>
+	Activates profile <name> by writing its values to power_supply files.
 `
 
 func commandSet(cfg *config.Config, args []string) error {

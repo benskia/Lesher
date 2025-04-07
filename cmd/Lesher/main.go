@@ -45,18 +45,22 @@ func main() {
 		}
 	}
 
-	// Execute ops
-	if len(os.Args) < 1 {
-		fmt.Println("Missing args. Try: Lesher help")
+	// Execute command
+	if len(os.Args) < 2 {
+		log.Fatal("Missing args. Try: Lesher help")
 	}
 
 	cmdName := os.Args[1]
-	cmdArgs := os.Args[1:]
+	var cmdArgs []string
+	if len(os.Args) > 2 {
+		cmdArgs = os.Args[2:]
+	}
 
 	cmd, ok := command.GetCommands()[cmdName]
 	if !ok {
-		log.Fatal("Invalid command name.")
+		log.Fatal("Invalid command name. Try: Lesher help")
 	}
+
 	err = cmd.Callback(cfg, cmdArgs)
 	if err != nil {
 		log.Fatalf("error executing %s: %v", cmd.Name, err)

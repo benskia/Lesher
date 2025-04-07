@@ -7,16 +7,16 @@ import (
 	"github.com/benskia/Lesher/internal/power"
 )
 
-const listDescription string = `
-Usage: Lesher list
-Lists existing profiles and active battery thresholds.
+const listDescription string = `Usage: Lesher list
+	Lists existing profiles and active battery thresholds.
 `
 
 func commandList(cfg *config.Config, _ []string) error {
+	fmt.Println()
 	fmt.Println("Profiles:")
 	for _, profile := range cfg.Profiles {
-		fmt.Printf("Name: %s\n", profile.Name)
-		fmt.Printf("Start: %d\tEnd: %d\n", profile.Start, profile.End)
+		fmt.Printf("\tName: %s\n", profile.Name)
+		fmt.Printf("\tStart: %d\tEnd: %d\n\n", profile.Start, profile.End)
 	}
 
 	batteries, err := power.GetThresholds()
@@ -26,8 +26,8 @@ func commandList(cfg *config.Config, _ []string) error {
 
 	fmt.Println("Current Thresholds:")
 	for _, battery := range batteries {
-		fmt.Printf("Name: %s\n", battery.Name)
-		fmt.Printf("Start: %d\tEnd: %d\n", battery.Start, battery.End)
+		fmt.Printf("\tName: %s\n", battery.Name)
+		fmt.Printf("\tStart: %d\tEnd: %d\n\n", battery.Start, battery.End)
 	}
 
 	return nil

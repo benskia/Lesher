@@ -18,8 +18,8 @@ import (
 
 type Profile struct {
 	Name  string `json:"name"`
-	Start int64  `json:"start"`
-	End   int64  `json:"end"`
+	Start int    `json:"start"`
+	End   int    `json:"end"`
 }
 
 type Profiles map[string]Profile

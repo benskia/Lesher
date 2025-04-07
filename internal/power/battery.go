@@ -1,11 +1,11 @@
 package power
 
 import (
-	"encoding/binary"
-	"errors"
 	"fmt"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 )
 
 const batFilepath string = "/sys/class/power_supply/"
@@ -18,14 +18,12 @@ const (
 	statusFile            = "status"
 )
 
-// We're working with int64 instead of int for the sake of using binary.Varint()
-// and binary.PutVarint() to easily read and write ints to files.
 type Battery struct {
 	Name             string
-	Start            int64
-	End              int64
-	FullChargeDesign int64
-	FullChargeActual int64
+	Start            int
+	End              int
+	FullChargeDesign int
+	FullChargeActual int
 }
 
 // A map simplifies execution of ops that target batteries by name.
@@ -53,21 +51,12 @@ func (bat *Battery) readThresholds() error {
 func (bat *Battery) writeThresholds() error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
-	b := []byte{}
 
-	if bytesWritten := binary.PutVarint(b, bat.Start); bytesWritten == 0 {
-		return errors.New("failed start PutVarint")
-	}
-
-	if err := os.WriteFile(startPath, b, 0644); err != nil {
+	if err := os.WriteFile(startPath, []byte(string(bat.Start)), 0644); err != nil {
 		return fmt.Errorf("failed start WriteFile: %v", err)
 	}
 
-	if bytesWritten := binary.PutVarint(b, bat.End); bytesWritten == 0 {
-		return errors.New("failed end PutVarint")
-	}
-
-	if err := os.WriteFile(endPath, b, 0644); err != nil {
+	if err := os.WriteFile(endPath, []byte(string(bat.End)), 0644); err != nil {
 		return fmt.Errorf("failed end WriteFile: %v", err)
 	}
 
@@ -93,15 +82,19 @@ func (bat *Battery) readFullCharges() error {
 	return nil
 }
 
-func readInt(filepath string) (int64, error) {
+func readInt(filepath string) (int, error) {
 	filename := path.Base(filepath)
 	b, err := os.ReadFile(filepath)
 	if err != nil {
 		return 0, fmt.Errorf("failed %s ReadFile: %v", filename, err)
 	}
-	value, bytesRead := binary.Varint(b)
-	if bytesRead == 0 {
-		return 0, fmt.Errorf("failed %s Varint: %v", filename, err)
+
+	// We should decoding directly from our []byte to int, because the files
+	// might (often do) contain whitespaces that will result in wrong numbers.
+	trimmedContent := strings.TrimSpace(string(b))
+	value, err := strconv.Atoi(trimmedContent)
+	if err != nil {
+		return 0, fmt.Errorf("error converting %s: %v", trimmedContent, err)
 	}
 
 	return value, nil

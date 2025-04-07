@@ -4,7 +4,7 @@ run:
 	go run cmd/Lesher/main.go
 
 test:
-	go test./...
+	go test ./...
 
 build:
 	go build -o bin/Lesher cmd/Lesher/main.go
