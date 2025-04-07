@@ -29,9 +29,7 @@ func commandCreate(cfg *config.Config, args []string) error {
 		return fmt.Errorf("error converting end value: %v", err)
 	}
 
-	// It's nonsensical (typically fails too) to set a start value higher than
-	// or equal to an end value.
-	if start >= end {
+	if !(start < end) {
 		return errors.New("start must be less than end")
 	}
 
