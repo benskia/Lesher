@@ -24,8 +24,20 @@ func commandSet(cfg *config.Config, args []string) error {
 		return fmt.Errorf("profile %s not found", name)
 	}
 
+	fmt.Printf("Setting profile %s ...\n", profile.Name)
 	if err := power.SaveThresholds(profile); err != nil {
 		return fmt.Errorf("error saving thresholds: %v", err)
+	}
+
+	batteries, err := power.GetThresholds()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("\nCurrent Thresholds:")
+	for _, battery := range batteries {
+		fmt.Printf("\tName: %s\n", battery.Name)
+		fmt.Printf("\tStart: %d\tEnd: %d\n\n", battery.Start, battery.End)
 	}
 
 	return nil
