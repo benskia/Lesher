@@ -8,13 +8,9 @@ import (
 	"path"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/benskia/Lesher/internal/config"
 )
-
-// Used to prevent Stdin corruption during sequential `tee` executions.
-var mut sync.Mutex
 
 const batFilepath string = "/sys/class/power_supply/"
 
@@ -63,16 +59,15 @@ func (bat *Battery) writeThresholds(profile config.Profile) error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
 
-	// The order we write in matters. If the new start is higher than the
-	// current end, the command will fail. Same if we try to set an end that
-	// is lower than the current start. To avoid this altogether, we can write
-	// minimum and maximum values before setting the new profile. `tee` has a
-	// tendency to hang, so this might change later.
 	type writeInfo struct {
 		path  string
 		value []byte
 	}
 
+	// The order we write in matters. If the new start is higher than the
+	// current end, the command will fail. Same if we try to set an end that
+	// is lower than the current start. To complex logic, we can just set temp
+	// minimum and maximum values before applying the profile.
 	toWrite := []writeInfo{
 		{path: startPath, value: []byte(strconv.Itoa(0))},
 		{path: endPath, value: []byte(strconv.Itoa(100))},
