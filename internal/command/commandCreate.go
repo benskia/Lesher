@@ -29,6 +29,12 @@ func commandCreate(cfg *config.Config, args []string) error {
 		return fmt.Errorf("error converting end value: %v", err)
 	}
 
+	// It's nonsensical (typically fails too) to set a start value higher than
+	// or equal to an end value.
+	if start >= end {
+		return errors.New("start must be less than end")
+	}
+
 	// We can just update the existing values if the profile already exists.
 	if profile, ok := cfg.Profiles[name]; ok {
 		fmt.Printf("Profile %s found. Updating values ...\n", name)
