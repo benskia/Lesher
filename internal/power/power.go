@@ -47,13 +47,15 @@ func GetThresholds() (Batteries, error) {
 
 // Writes power supply info for all power_supplies passed by ops.
 func SaveThresholds(profile config.Profile) error {
-	batteries, err := getPowerSupplies(batFilepath)
+	// Write order depends on comparisons between current and new thresholds,
+	// so we need thresholds - not just names.
+	batteries, err := GetThresholds()
 	if err != nil {
-		return fmt.Errorf("failed to find power supplies: %v", err)
+		return fmt.Errorf("error getting thresholds: %v", err)
 	}
 
 	for name, bat := range batteries {
-		if err := bat.writeThresholds(); err != nil {
+		if err := bat.writeThresholds(profile); err != nil {
 			return fmt.Errorf("failed to write %s thresholds: %v", name, err)
 		}
 		batteries[name] = bat
