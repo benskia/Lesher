@@ -34,20 +34,12 @@ func commandCreate(cfg *config.Config, args []string) error {
 	}
 
 	// We can just update the existing values if the profile already exists.
-	if profile, ok := cfg.Profiles[name]; ok {
-		fmt.Printf("Profile %s found. Updating values ...\n", name)
-		profile.Start = start
-		profile.End = end
-		cfg.Profiles[name] = profile
-
-		if err := cfg.SaveConfig(); err != nil {
-			return fmt.Errorf("error saving profiles: %v", err)
-		}
-
-		return nil
+	if _, ok := cfg.Profiles[name]; ok {
+		fmt.Printf("Updating profile %s ...", name)
+	} else {
+		fmt.Printf("Creating profile %s ...", name)
 	}
 
-	fmt.Printf("Creating profile %s with start %d and end %d ...\n", name, start, end)
 	cfg.Profiles[name] = config.Profile{
 		Name:  name,
 		Start: start,
