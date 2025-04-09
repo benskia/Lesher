@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/benskia/Thresher/internal/config"
 )
@@ -21,25 +22,32 @@ func commandCreate(cfg *config.Config, args []string) error {
 
 	start, err := strconv.Atoi(args[1])
 	if err != nil {
-		return fmt.Errorf("error converting start value: %v", err)
+		return fmt.Errorf("start must be a number: %w", err)
 	}
 
 	end, err := strconv.Atoi(args[2])
 	if err != nil {
-		return fmt.Errorf("error converting end value: %v", err)
+		return fmt.Errorf("end must be a number: %w", err)
 	}
 
 	if !(start < end) {
 		return errors.New("start must be less than end")
 	}
 
-	// We can just update the existing values if the profile already exists.
 	if _, ok := cfg.Profiles[name]; ok {
-		fmt.Printf("Updating profile %s ...\n", name)
-	} else {
-		fmt.Printf("Creating profile %s ...\n", name)
+		fmt.Printf("Profile %s exists. Update? (y/N) ", name)
+
+		var confirm string
+		if _, err := fmt.Scanln(&confirm); err != nil {
+			return fmt.Errorf("error confirming profile update: %w", err)
+		}
+
+		if strings.ToLower(confirm) != "y" {
+			return errors.New("user cancelled update")
+		}
 	}
 
+	fmt.Printf("Creating profile %s with start %d and end %d ...\n", name, start, end)
 	cfg.Profiles[name] = config.Profile{
 		Name:  name,
 		Start: start,
