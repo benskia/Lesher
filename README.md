@@ -18,15 +18,14 @@ Note: Currently only supports Linux platforms that implement the power_supply cl
 
 Install:
 
-``` go
+``` bash
 git clone git@github.com:benskia/Thresher.git
-cd Thresher/cmd/Thresher
-go install
+go install Thresher/cmd/Thresher
 ```
 
 Build:
 
-``` go
+``` bash
 git clone git@github.com:benskia/Thresher.git
 cd Thresher
 make build
