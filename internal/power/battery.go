@@ -74,13 +74,15 @@ func (bat *Battery) writeThresholds(profile config.Profile) error {
 
 	// The order we write in matters. If the new start is higher than the
 	// current end, the command will fail. Same if we try to set an end that
-	// is lower than the current start. To complex logic, we can just set temp
-	// minimum and maximum values before applying the profile.
-	toWrite := []writeInfo{
-		{path: startPath, value: []byte(strconv.Itoa(0))},
-		{path: endPath, value: []byte(strconv.Itoa(100))},
-		{path: startPath, value: []byte(strconv.Itoa(profile.Start))},
-		{path: endPath, value: []byte(strconv.Itoa(profile.End))},
+	// is lower than the current start.
+	toWrite := []writeInfo{}
+	startData := writeInfo{path: startPath, value: []byte(strconv.Itoa(profile.Start))}
+	endData := writeInfo{path: endPath, value: []byte(strconv.Itoa(profile.End))}
+
+	if profile.Start >= bat.End {
+		toWrite = append(toWrite, endData, startData)
+	} else {
+		toWrite = append(toWrite, startData, endData)
 	}
 
 	for _, data := range toWrite {
