@@ -1,8 +1,8 @@
 # Thresher
 
-Manage Lenovo battery thresholds using power_supply class on Linux. List,
-create, and delete charging profiles. Get the current health of each battery as
-a percentage remaining of the battery's full-charge design specification.
+Manage battery thresholds using power_supply class on Linux. List, create, and
+delete charging profiles. Get the current health of each battery as a
+percentage remaining of the battery's full-charge design specification.
 
 * [Install](#install)
 * [Usage](#usage)

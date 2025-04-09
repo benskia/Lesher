@@ -26,7 +26,7 @@ func commandSet(cfg *config.Config, args []string) error {
 
 	fmt.Printf("Setting profile %s ...\n", profile.Name)
 	if err := power.SaveThresholds(profile); err != nil {
-		return fmt.Errorf("error saving thresholds: %v", err)
+		return fmt.Errorf("error saving thresholds: %w", err)
 	}
 
 	batteries, err := power.GetThresholds()

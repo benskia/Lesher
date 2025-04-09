@@ -39,7 +39,7 @@ func main() {
 	// Load/Create config
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		fmt.Printf("%v\nCreating new config...\n", err)
+		fmt.Printf("%w\nCreating new config...\n", err)
 		if err := cfg.SaveConfig(); err != nil {
 			fmt.Println(err)
 		}
@@ -63,6 +63,6 @@ func main() {
 
 	err = cmd.Callback(cfg, cmdArgs)
 	if err != nil {
-		log.Fatalf("error executing %s: %v", cmd.Name, err)
+		log.Fatalf("error executing %s: %w", cmd.Name, err)
 	}
 }

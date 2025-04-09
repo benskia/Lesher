@@ -53,7 +53,7 @@ func LoadConfig() (*Config, error) {
 	err := cfg.readConfigFile()
 	if err != nil {
 		cfg.Profiles = Defaults
-		err = fmt.Errorf("failed to read config file: %v", err)
+		err = fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	return cfg, err
@@ -61,7 +61,7 @@ func LoadConfig() (*Config, error) {
 
 func (cfg *Config) SaveConfig() error {
 	if err := cfg.writeConfigFile(); err != nil {
-		return fmt.Errorf("failed to write config file: %v", err)
+		return fmt.Errorf("failed to write config file: %w", err)
 	}
 	return nil
 }
@@ -69,12 +69,12 @@ func (cfg *Config) SaveConfig() error {
 func (cfg *Config) readConfigFile() error {
 	b, err := os.ReadFile(cfg.configPath)
 	if err != nil {
-		return fmt.Errorf("error reading config file: %v", err)
+		return fmt.Errorf("error reading config file: %w", err)
 	}
 
 	var profiles Profiles
 	if err = json.Unmarshal(b, &profiles); err != nil {
-		return fmt.Errorf("error unmarshaling: %v", err)
+		return fmt.Errorf("error unmarshaling: %w", err)
 	}
 
 	cfg.Profiles = profiles
@@ -84,22 +84,22 @@ func (cfg *Config) readConfigFile() error {
 func (cfg *Config) writeConfigFile() error {
 	// To work with a config, we'll need the file and directory where it lives.
 	if err := os.MkdirAll(path.Dir(cfg.configPath), 0755); err != nil {
-		return fmt.Errorf("error making config directories: %v", err)
+		return fmt.Errorf("error making config directories: %w", err)
 	}
 
 	f, err := os.Create(cfg.configPath)
 	defer f.Close()
 	if err != nil {
-		return fmt.Errorf("error creating config file: %v", err)
+		return fmt.Errorf("error creating config file: %w", err)
 	}
 
 	b, err := json.Marshal(cfg.Profiles)
 	if err != nil {
-		return fmt.Errorf("error marshaling: %v", err)
+		return fmt.Errorf("error marshaling: %w", err)
 	}
 
 	if _, err := f.Write(b); err != nil {
-		return fmt.Errorf("error writing config file: %v", err)
+		return fmt.Errorf("error writing config file: %w", err)
 	}
 
 	return nil

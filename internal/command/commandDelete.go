@@ -26,7 +26,7 @@ func commandDelete(cfg *config.Config, args []string) error {
 	delete(cfg.Profiles, name)
 
 	if err := cfg.SaveConfig(); err != nil {
-		return fmt.Errorf("error saving profiles: %v", err)
+		return fmt.Errorf("error saving profiles: %w", err)
 	}
 
 	return nil

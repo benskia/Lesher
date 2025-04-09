@@ -31,13 +31,13 @@ import (
 func GetThresholds() (Batteries, error) {
 	batteries, err := getPowerSupplies(batFilepath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find power supplies: %v", err)
+		return nil, fmt.Errorf("failed to find power supplies: %w", err)
 	}
 
 	for name, bat := range batteries {
 		err := bat.readThresholdFiles()
 		if err != nil {
-			return nil, fmt.Errorf("failed to read %s thresholds: %v", name, err)
+			return nil, fmt.Errorf("failed to read %s thresholds: %w", name, err)
 		}
 		batteries[name] = bat
 	}
@@ -51,12 +51,12 @@ func SaveThresholds(profile config.Profile) error {
 	// so we need thresholds - not just names.
 	batteries, err := GetThresholds()
 	if err != nil {
-		return fmt.Errorf("error getting thresholds: %v", err)
+		return fmt.Errorf("error getting thresholds: %w", err)
 	}
 
 	for name, bat := range batteries {
 		if err := bat.writeThresholdFiles(profile); err != nil {
-			return fmt.Errorf("failed to write %s thresholds: %v", name, err)
+			return fmt.Errorf("failed to write %s thresholds: %w", name, err)
 		}
 		batteries[name] = bat
 	}
@@ -68,13 +68,13 @@ func SaveThresholds(profile config.Profile) error {
 func GetFullCharges() (Batteries, error) {
 	batteries, err := getPowerSupplies(batFilepath)
 	if err != nil {
-		return nil, fmt.Errorf("failed to find power supplies: %v", err)
+		return nil, fmt.Errorf("failed to find power supplies: %w", err)
 	}
 
 	for name, bat := range batteries {
 		err := bat.readFullChargeFiles()
 		if err != nil {
-			return nil, fmt.Errorf("failed to read %s full-charges: %v", name, err)
+			return nil, fmt.Errorf("failed to read %s full-charges: %w", name, err)
 		}
 		batteries[name] = bat
 	}
@@ -86,7 +86,7 @@ func GetFullCharges() (Batteries, error) {
 func getPowerSupplies(filepath string) (Batteries, error) {
 	dirs, err := os.ReadDir(filepath)
 	if err != nil {
-		return nil, fmt.Errorf("failed ReadDir: %v", err)
+		return nil, fmt.Errorf("failed ReadDir: %w", err)
 	}
 
 	// ./power_supply/* should only contain BAT# and possibly AC. We only need BATs.

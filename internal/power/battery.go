@@ -41,12 +41,12 @@ func (bat *Battery) readThresholdFiles() error {
 
 	startValue, err := fileToInt(startPath)
 	if err != nil {
-		return fmt.Errorf("failed to get start value: %v", err)
+		return fmt.Errorf("failed to get start value: %w", err)
 	}
 
 	endValue, err := fileToInt(endPath)
 	if err != nil {
-		return fmt.Errorf("failed to get end value: %v", err)
+		return fmt.Errorf("failed to get end value: %w", err)
 	}
 
 	status, err := fileToStr(statusPath)
@@ -89,7 +89,7 @@ func (bat *Battery) writeThresholdFiles(profile config.Profile) error {
 		cmd := exec.Command("sudo", "dd", "of="+data.path)
 		cmd.Stdin = bytes.NewReader(data.value)
 		if err := cmd.Run(); err != nil {
-			return fmt.Errorf("error executing command:\n\t%v\n\t%v", cmd, err)
+			return fmt.Errorf("error executing command:\n\t%+v\n\t%w", cmd, err)
 		}
 	}
 
@@ -102,12 +102,12 @@ func (bat *Battery) readFullChargeFiles() error {
 
 	fullActualValue, err := fileToInt(fullActualPath)
 	if err != nil {
-		return fmt.Errorf("failed to get actual full-charge value: %v", err)
+		return fmt.Errorf("failed to get actual full-charge value: %w", err)
 	}
 
 	fullDesignValue, err := fileToInt(fullDesignPath)
 	if err != nil {
-		return fmt.Errorf("failed to get design full-charge value: %v", err)
+		return fmt.Errorf("failed to get design full-charge value: %w", err)
 	}
 
 	bat.FullChargeActual = fullActualValue
@@ -119,7 +119,7 @@ func fileToInt(filepath string) (int, error) {
 	filename := path.Base(filepath)
 	b, err := os.ReadFile(filepath)
 	if err != nil {
-		return 0, fmt.Errorf("failed %s ReadFile: %v", filename, err)
+		return 0, fmt.Errorf("failed %s ReadFile: %w", filename, err)
 	}
 
 	// We should decoding directly from our []byte to int, because the files
@@ -127,7 +127,7 @@ func fileToInt(filepath string) (int, error) {
 	trimmedContent := strings.TrimSpace(string(b))
 	value, err := strconv.Atoi(trimmedContent)
 	if err != nil {
-		return 0, fmt.Errorf("error converting %s: %v", trimmedContent, err)
+		return 0, fmt.Errorf("error converting %s: %w", trimmedContent, err)
 	}
 
 	return value, nil
