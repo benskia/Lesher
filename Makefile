@@ -11,4 +11,4 @@ build:
 
 clean:
 	rm -rf bin/
-	rm -rf $$XDG_CONFIG_HOME/lesher/
+	rm -rf $$XDG_CONFIG_HOME/Thresher/
