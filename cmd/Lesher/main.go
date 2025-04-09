@@ -35,10 +35,6 @@ import (
 // set <name>
 //		Sets profile <name> as the active profile.
 
-// TODO: Successive executions have a tendency to hang and fail. I suspect
-// this might be related to the changes being detected and those files being
-// accessed by other service(s). Needs fixing.
-
 func main() {
 	// Load/Create config
 	cfg, err := config.LoadConfig()
