@@ -1,6 +1,6 @@
 package command
 
-import "github.com/benskia/Lesher/internal/config"
+import "github.com/benskia/Thresher/internal/config"
 
 // Description:
 //	Manages commands (ops) to execute as <args> [opts].

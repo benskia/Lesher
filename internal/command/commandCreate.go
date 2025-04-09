@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/benskia/Lesher/internal/config"
+	"github.com/benskia/Thresher/internal/config"
 )
 
-const createDescription string = `Usage: Lesher create <name> <start> <end>
+const createDescription string = `Usage: Thresher create <name> <start> <end>
 	Creates or overwrites profile <name> with the given <start> and <end> values.
 `
 

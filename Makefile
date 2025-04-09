@@ -1,13 +1,13 @@
 .PHONY: run test build clean
 
 run:
-	go run cmd/Lesher/main.go
+	go run cmd/Thresher/main.go
 
 test:
 	go test ./...
 
 build:
-	go build -o bin/Lesher cmd/Lesher/main.go
+	go build -o bin/Thresher cmd/Thresher/main.go
 
 clean:
 	rm -rf bin/

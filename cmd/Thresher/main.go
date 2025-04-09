@@ -5,15 +5,15 @@ import (
 	"log"
 	"os"
 
-	"github.com/benskia/Lesher/internal/command"
-	"github.com/benskia/Lesher/internal/config"
+	"github.com/benskia/Thresher/internal/command"
+	"github.com/benskia/Thresher/internal/config"
 )
 
-// Users can run Lesher to list battery threshold stats, check fullCharge
+// Users can run Thresher to list battery threshold stats, check fullCharge
 // health, create threshold profiles, and activate existing profiles. This is
 // done using charge_control files of the Linux power_supply class.
 //
-// Usage: Lesher <cmd> [opts...]
+// Usage: Thresher <cmd> [opts...]
 //
 // help
 //		Display this documentation.
@@ -47,7 +47,7 @@ func main() {
 
 	// Execute command
 	if len(os.Args) < 2 {
-		log.Fatal("Missing args. Try: Lesher help")
+		log.Fatal("Missing args. Try: Thresher help")
 	}
 
 	cmdName := os.Args[1]
@@ -58,7 +58,7 @@ func main() {
 
 	cmd, ok := command.GetCommands()[cmdName]
 	if !ok {
-		log.Fatal("Invalid command name. Try: Lesher help")
+		log.Fatal("Invalid command name. Try: Thresher help")
 	}
 
 	err = cmd.Callback(cfg, cmdArgs)

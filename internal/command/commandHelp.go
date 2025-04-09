@@ -3,11 +3,11 @@ package command
 import (
 	"fmt"
 
-	"github.com/benskia/Lesher/internal/config"
+	"github.com/benskia/Thresher/internal/config"
 )
 
-const helpDescription string = `Usage: Lesher help
-	Displays Lesher documentation.
+const helpDescription string = `Usage: Thresher help
+	Displays Thresher documentation.
 `
 
 func commandHelp(_ *config.Config, _ []string) error {
@@ -32,7 +32,7 @@ func commandHelp(_ *config.Config, _ []string) error {
 	// set <name>
 	//		Sets profile <name> as the active profile.
 	fmt.Print(`
-Users can run Lesher to list battery threshold stats, check fullCharge health,
+Users can run Thresher to list battery threshold stats, check fullCharge health,
 create threshold profiles, and activate existing profiles. This is done using
 charge_control files of the Linux power_supply class.
 

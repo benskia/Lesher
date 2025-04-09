@@ -50,7 +50,7 @@ func LoadConfig() (*Config, error) {
 
 	// We can still use Defaults if we fail to get Profiles from a config file.
 	// Still, if we were expecting success, so return that error later.
-	err := cfg.readConfig()
+	err := cfg.readConfigFile()
 	if err != nil {
 		cfg.Profiles = Defaults
 		err = fmt.Errorf("failed to read config file: %v", err)
@@ -60,13 +60,13 @@ func LoadConfig() (*Config, error) {
 }
 
 func (cfg *Config) SaveConfig() error {
-	if err := cfg.writeConfig(); err != nil {
+	if err := cfg.writeConfigFile(); err != nil {
 		return fmt.Errorf("failed to write config file: %v", err)
 	}
 	return nil
 }
 
-func (cfg *Config) readConfig() error {
+func (cfg *Config) readConfigFile() error {
 	b, err := os.ReadFile(cfg.configPath)
 	if err != nil {
 		return fmt.Errorf("error reading config file: %v", err)
@@ -81,7 +81,7 @@ func (cfg *Config) readConfig() error {
 	return nil
 }
 
-func (cfg *Config) writeConfig() error {
+func (cfg *Config) writeConfigFile() error {
 	// To work with a config, we'll need the file and directory where it lives.
 	if err := os.MkdirAll(path.Dir(cfg.configPath), 0755); err != nil {
 		return fmt.Errorf("error making config directories: %v", err)

@@ -3,11 +3,11 @@ package command
 import (
 	"fmt"
 
-	"github.com/benskia/Lesher/internal/config"
-	"github.com/benskia/Lesher/internal/power"
+	"github.com/benskia/Thresher/internal/config"
+	"github.com/benskia/Thresher/internal/power"
 )
 
-const healthDescription string = `Usage: Lesher health
+const healthDescription string = `Usage: Thresher health
 	Lists full-charge stats for active batteries, and displays the remaining
 	percentage of full-charge that is possible due to wear.
 `

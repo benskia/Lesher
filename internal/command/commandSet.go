@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/benskia/Lesher/internal/config"
-	"github.com/benskia/Lesher/internal/power"
+	"github.com/benskia/Thresher/internal/config"
+	"github.com/benskia/Thresher/internal/power"
 )
 
-const setDescription string = `Usage: Lesher set <name>
+const setDescription string = `Usage: Thresher set <name>
 	Activates profile <name> by writing its values to power_supply files.
 `
 

@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/benskia/Lesher/internal/config"
+	"github.com/benskia/Thresher/internal/config"
 )
 
-const deleteDescription string = `Usage: Lesher delete <name>
+const deleteDescription string = `Usage: Thresher delete <name>
 	Deletes profile <name> if it exists.
 `
 

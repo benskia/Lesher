@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/benskia/Lesher/internal/config"
+	"github.com/benskia/Thresher/internal/config"
 )
 
 const batFilepath string = "/sys/class/power_supply/"
@@ -34,22 +34,22 @@ type Battery struct {
 // A map simplifies execution of ops that target batteries by name.
 type Batteries map[string]Battery
 
-func (bat *Battery) readThresholds() error {
+func (bat *Battery) readThresholdFiles() error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
 	statusPath := path.Join(batFilepath, bat.Name, statusFile)
 
-	startValue, err := readInt(startPath)
+	startValue, err := fileToInt(startPath)
 	if err != nil {
 		return fmt.Errorf("failed to get start value: %v", err)
 	}
 
-	endValue, err := readInt(endPath)
+	endValue, err := fileToInt(endPath)
 	if err != nil {
 		return fmt.Errorf("failed to get end value: %v", err)
 	}
 
-	status, err := readStr(statusPath)
+	status, err := fileToStr(statusPath)
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func (bat *Battery) readThresholds() error {
 // Elevated permissions are required to write to power_supply files. It's a bit
 // overkill to require these permissions for the entire program, so we can just
 // execute sudo shell commands instead of using WriteFile.
-func (bat *Battery) writeThresholds(profile config.Profile) error {
+func (bat *Battery) writeThresholdFiles(profile config.Profile) error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
 
@@ -96,16 +96,16 @@ func (bat *Battery) writeThresholds(profile config.Profile) error {
 	return nil
 }
 
-func (bat *Battery) readFullCharges() error {
+func (bat *Battery) readFullChargeFiles() error {
 	fullActualPath := path.Join(batFilepath, bat.Name, fullActualFile)
 	fullDesignPath := path.Join(batFilepath, bat.Name, fullDesignFile)
 
-	fullActualValue, err := readInt(fullActualPath)
+	fullActualValue, err := fileToInt(fullActualPath)
 	if err != nil {
 		return fmt.Errorf("failed to get actual full-charge value: %v", err)
 	}
 
-	fullDesignValue, err := readInt(fullDesignPath)
+	fullDesignValue, err := fileToInt(fullDesignPath)
 	if err != nil {
 		return fmt.Errorf("failed to get design full-charge value: %v", err)
 	}
@@ -115,7 +115,7 @@ func (bat *Battery) readFullCharges() error {
 	return nil
 }
 
-func readInt(filepath string) (int, error) {
+func fileToInt(filepath string) (int, error) {
 	filename := path.Base(filepath)
 	b, err := os.ReadFile(filepath)
 	if err != nil {
@@ -133,7 +133,7 @@ func readInt(filepath string) (int, error) {
 	return value, nil
 }
 
-func readStr(filepath string) (string, error) {
+func fileToStr(filepath string) (string, error) {
 	filename := path.Base(filepath)
 	b, err := os.ReadFile(filepath)
 	if err != nil {

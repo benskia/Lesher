@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/benskia/Lesher/internal/config"
+	"github.com/benskia/Thresher/internal/config"
 )
 
 // Description:
@@ -16,7 +16,7 @@ import (
 //	Active batteries and their files might change between executions, so we
 //	probably don't need persisting information about the batteries.
 //
-//	Lesher sets the same thresholds for all batteries, but there might be cases
+//	Thresher sets the same thresholds for all batteries, but there might be cases
 //	(such as before the first profile is set) when batteries have different
 //	thresholds. Still considering if it makes sense to print details for every
 //	battery individually.
@@ -35,7 +35,7 @@ func GetThresholds() (Batteries, error) {
 	}
 
 	for name, bat := range batteries {
-		err := bat.readThresholds()
+		err := bat.readThresholdFiles()
 		if err != nil {
 			return nil, fmt.Errorf("failed to read %s thresholds: %v", name, err)
 		}
@@ -55,7 +55,7 @@ func SaveThresholds(profile config.Profile) error {
 	}
 
 	for name, bat := range batteries {
-		if err := bat.writeThresholds(profile); err != nil {
+		if err := bat.writeThresholdFiles(profile); err != nil {
 			return fmt.Errorf("failed to write %s thresholds: %v", name, err)
 		}
 		batteries[name] = bat
@@ -72,7 +72,7 @@ func GetFullCharges() (Batteries, error) {
 	}
 
 	for name, bat := range batteries {
-		err := bat.readFullCharges()
+		err := bat.readFullChargeFiles()
 		if err != nil {
 			return nil, fmt.Errorf("failed to read %s full-charges: %v", name, err)
 		}

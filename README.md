@@ -1,4 +1,4 @@
-# Lesher
+# Thresher
 
 Manage Lenovo battery thresholds using power_supply class on Linux. List,
 create, and delete charging profiles. Get the current health of each battery as
@@ -13,31 +13,31 @@ Note: Currently only supports Linux platforms that implement the power_supply cl
 
 1. [Download and Install GO](https://go.dev/doc/install)
 2. Add your user's go/bin (usually '$HOME/go/bin') to PATH.
-3. [Clone this Repo](git@github.com:benskia/Lesher.git)
+3. [Clone this Repo](git@github.com:benskia/Thresher.git)
 4. Install or build the project.
 
 Install:
 
 ``` go
-git clone git@github.com:benskia/Lesher.git
-cd Lesher/cmd/Lesher
+git clone git@github.com:benskia/Thresher.git
+cd Thresher/cmd/Thresher
 go install
 ```
 
 Build:
 
 ``` go
-git clone git@github.com:benskia/Lesher.git
-cd Lesher
+git clone git@github.com:benskia/Thresher.git
+cd Thresher
 make build
-./bin/Lesher
+./bin/Thresher
 ```
 
 ## Usage
 
-`Lesher <command> [options]`
+`Thresher <command> [options]`
 
-### Display Lesher documentation
+### Display Thresher documentation
 
 * `help`
 

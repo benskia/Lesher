@@ -3,11 +3,11 @@ package command
 import (
 	"fmt"
 
-	"github.com/benskia/Lesher/internal/config"
-	"github.com/benskia/Lesher/internal/power"
+	"github.com/benskia/Thresher/internal/config"
+	"github.com/benskia/Thresher/internal/power"
 )
 
-const listDescription string = `Usage: Lesher list
+const listDescription string = `Usage: Thresher list
 	Lists existing profiles and active battery thresholds.
 `
 
