@@ -44,26 +44,26 @@ make build
 
 `Lesher <command> [options]`
 
+### Display Lesher documentation
+
 * `help`
 
-Display Lesher documentation.
+### Display available profiles, current battery thresholds, and charge status
 
 * `list`
 
-Display available profiles, current battery thresholds, and charge status.
+### Display battery full-charge stats
 
 * `health`
 
-Display battery full-charge stats.
+### Create or update a profile with start and end thresholds
 
 * `create <profile-name> <charge-start> <charge-end>`
 
-Create or update a profile with start and end thresholds.
+### Delete a profile
 
 * `delete <profile-name>`
 
-Delete a profile.
+### Active a profile by writing its start and end thresholds to file
 
 * `set <profile-name>`
-
-Active a profile by writing its start and end thresholds to file.
