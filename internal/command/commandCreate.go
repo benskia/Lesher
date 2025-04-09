@@ -38,16 +38,8 @@ func commandCreate(cfg *config.Config, args []string) error {
 
 	// Updates are destructive, so we should get confirmation from the user.
 	if _, ok := cfg.Profiles[name]; ok {
-		fmt.Printf("Profile %s exists. Update? (y/N) ", name)
-		scanner := bufio.NewScanner(os.Stdin)
-		scanner.Scan()
-
-		if err := scanner.Err(); err != nil {
-			return fmt.Errorf("error confirming profile update: %w", err)
-		}
-
-		if strings.ToLower(scanner.Text()) != "y" {
-			return errors.New("user cancelled update")
+		if err := confirmUpdate(name); err != nil {
+			return err
 		}
 	}
 
@@ -59,7 +51,24 @@ func commandCreate(cfg *config.Config, args []string) error {
 	}
 
 	if err := cfg.SaveConfig(); err != nil {
-		return fmt.Errorf("error saving profiles: %v", err)
+		return fmt.Errorf("error saving profiles: %w", err)
+	}
+
+	return nil
+}
+
+// Returns nil if the user wants to continue with updating profile 'name'.
+func confirmUpdate(name string) error {
+	fmt.Printf("Profile %s exists. Update? (y/N) ", name)
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error confirming profile update: %w", err)
+	}
+
+	if strings.ToLower(scanner.Text()) != "y" {
+		return errors.New("user cancelled update")
 	}
 
 	return nil
