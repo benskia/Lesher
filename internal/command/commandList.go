@@ -27,7 +27,8 @@ func commandList(cfg *config.Config, _ []string) error {
 	fmt.Println("Current Thresholds:")
 	for _, battery := range batteries {
 		fmt.Printf("\tName: %s\n", battery.Name)
-		fmt.Printf("\tStart: %d\tEnd: %d\n\n", battery.Start, battery.End)
+		fmt.Printf("\tStart: %d\tEnd: %d\n", battery.Start, battery.End)
+		fmt.Printf("\tStatus: %s\n\n", battery.Status)
 	}
 
 	return nil

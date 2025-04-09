@@ -24,6 +24,7 @@ const (
 
 type Battery struct {
 	Name             string
+	Status           string
 	Start            int
 	End              int
 	FullChargeDesign int
@@ -36,6 +37,7 @@ type Batteries map[string]Battery
 func (bat *Battery) readThresholds() error {
 	startPath := path.Join(batFilepath, bat.Name, startFile)
 	endPath := path.Join(batFilepath, bat.Name, endFile)
+	statusPath := path.Join(batFilepath, bat.Name, statusFile)
 
 	startValue, err := readInt(startPath)
 	if err != nil {
@@ -47,8 +49,14 @@ func (bat *Battery) readThresholds() error {
 		return fmt.Errorf("failed to get end value: %v", err)
 	}
 
+	status, err := readStr(statusPath)
+	if err != nil {
+		return err
+	}
+
 	bat.Start = startValue
 	bat.End = endValue
+	bat.Status = status
 	return nil
 }
 
@@ -121,4 +129,14 @@ func readInt(filepath string) (int, error) {
 	}
 
 	return value, nil
+}
+
+func readStr(filepath string) (string, error) {
+	filename := path.Base(filepath)
+	b, err := os.ReadFile(filepath)
+	if err != nil {
+		return "", fmt.Errorf("error reading %s: %w", filename, err)
+	}
+
+	return strings.TrimSpace(string(b)), nil
 }
