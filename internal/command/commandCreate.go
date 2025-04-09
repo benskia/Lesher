@@ -1,8 +1,10 @@
 package command
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -34,15 +36,17 @@ func commandCreate(cfg *config.Config, args []string) error {
 		return errors.New("start must be less than end")
 	}
 
+	// Updates are destructive, so we should get confirmation from the user.
 	if _, ok := cfg.Profiles[name]; ok {
 		fmt.Printf("Profile %s exists. Update? (y/N) ", name)
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Scan()
 
-		var confirm string
-		if _, err := fmt.Scanln(&confirm); err != nil {
+		if err := scanner.Err(); err != nil {
 			return fmt.Errorf("error confirming profile update: %w", err)
 		}
 
-		if strings.ToLower(confirm) != "y" {
+		if strings.ToLower(scanner.Text()) != "y" {
 			return errors.New("user cancelled update")
 		}
 	}
