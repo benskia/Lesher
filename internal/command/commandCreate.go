@@ -35,9 +35,9 @@ func commandCreate(cfg *config.Config, args []string) error {
 
 	// We can just update the existing values if the profile already exists.
 	if _, ok := cfg.Profiles[name]; ok {
-		fmt.Printf("Updating profile %s ...", name)
+		fmt.Printf("Updating profile %s ...\n", name)
 	} else {
-		fmt.Printf("Creating profile %s ...", name)
+		fmt.Printf("Creating profile %s ...\n", name)
 	}
 
 	cfg.Profiles[name] = config.Profile{
