@@ -42,10 +42,8 @@ var Defaults Profiles = Profiles{
 	},
 }
 
-// Get a config pointer whether a previous config exists or not.
-func LoadConfig() (*Config, error) {
-	xdgCfg := os.Getenv("XDG_CONFIG_HOME")
-	configPath := path.Join(xdgCfg, "Thresher/config.json")
+// Get a config pointer either using an existing config file or Defaults.
+func LoadConfig(configPath string) (*Config, error) {
 	cfg := &Config{configPath: configPath}
 
 	// We can still use Defaults if we fail to get Profiles from a config file.

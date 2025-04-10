@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 
 	"github.com/benskia/Thresher/internal/command"
 	"github.com/benskia/Thresher/internal/config"
@@ -37,7 +38,9 @@ import (
 
 func main() {
 	// Load/Create config
-	cfg, err := config.LoadConfig()
+	xdgCfg := os.Getenv("XDG_CONFIG_HOME")
+	configPath := path.Join(xdgCfg, "Thresher/config.json")
+	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
 		fmt.Printf("%w\nCreating new config...\n", err)
 		if err := cfg.SaveConfig(); err != nil {
