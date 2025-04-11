@@ -8,7 +8,7 @@ build:
 
 clean:
 	rm -rf ./bin/
-	rm -rf $$XDG_CONFIG_HOME/Thresher/
+	rm -rf $$HOME/.config/Thresher
 
 install:
 	go install ./cmd/Thresher/

@@ -38,11 +38,11 @@ import (
 
 func main() {
 	// Load/Create config
-	xdgCfg := os.Getenv("XDG_CONFIG_HOME")
-	configPath := path.Join(xdgCfg, "Thresher/config.json")
+	xdgCfg := os.Getenv("HOME")
+	configPath := path.Join(xdgCfg, ".config/Thresher/config.json")
 	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
-		fmt.Printf("%w\nCreating new config...\n", err)
+		fmt.Printf("%v\nCreating new config...\n", err)
 		if err := cfg.SaveConfig(); err != nil {
 			fmt.Println(err)
 		}
@@ -66,6 +66,6 @@ func main() {
 
 	err = cmd.Callback(cfg, cmdArgs)
 	if err != nil {
-		log.Fatalf("error executing %s: %w", cmd.Name, err)
+		log.Fatalf("error executing %s: %v", cmd.Name, err)
 	}
 }
