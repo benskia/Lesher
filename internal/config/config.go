@@ -47,7 +47,7 @@ func LoadConfig(configPath string) (*Config, error) {
 	cfg := &Config{configPath: configPath}
 
 	// We can still use Defaults if we fail to get Profiles from a config file.
-	// Still, if we were expecting success, so return that error later.
+	// In case we were expecting a config file, we should return this error.
 	err := cfg.readConfigFile()
 	if err != nil {
 		cfg.Profiles = Defaults

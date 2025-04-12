@@ -122,8 +122,6 @@ func fileToInt(filepath string) (int, error) {
 		return 0, fmt.Errorf("failed %s ReadFile: %w", filename, err)
 	}
 
-	// We should decoding directly from our []byte to int, because the files
-	// might (often do) contain whitespaces that will result in wrong numbers.
 	trimmedContent := strings.TrimSpace(string(b))
 	value, err := strconv.Atoi(trimmedContent)
 	if err != nil {
