@@ -4,7 +4,7 @@ run:
 	go run ./cmd/Thresher/main.go
 
 build:
-	go build -o ./bin/Thresher ./cmd/Thresher/main.go
+	go build -o ./bin/thresher ./cmd/Thresher/main.go
 
 clean:
 	rm -rf ./bin/
